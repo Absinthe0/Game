@@ -1,0 +1,28 @@
+spring:
+  profiles: dev
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    user: postgres
+    password: password
+    url: jdbc:postgresql://127.0.0.1:5432/playground?currentSchema=play_owner
+
+  flyway:
+    location: classpath:db/migration
+    enabled: true
+    user: postgres
+    password: password
+    baseline-On-Migrate: true
+    schemas: play_owner
+    table: schema_version
+
+kafka:
+  bootstrapAddress: http://localhost:9092
+  groupId: group1

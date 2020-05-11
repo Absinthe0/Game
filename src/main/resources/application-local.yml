@@ -1,0 +1,44 @@
+spring:
+  profiles: local
+  flyway:
+    enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    platform: h2
+  jpa:
+    hibernate:
+      ddl-auto: create
+      show_sql: true
+      use_sql_comments: true
+      format_sql: true
+  h2:
+    console:
+      enabled: true
+
+  kafka:
+    bootstrapAddress: http://localhost:9092
+    groupId: group1
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+        0: DEBUG
+      hibernate: TRACE
+    come:
+      yiwen:
+        log: DEBUG
+
+server:
+  ssl:
+    enable: false
+  port: 8080
+
