@@ -1,4 +1,4 @@
-package com.yiwen.playground.model;
+package com.yiwen.playground.model.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

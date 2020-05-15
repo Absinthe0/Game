@@ -12,5 +12,6 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     Player findById(long id);
     List<Player> findByFirstNameAndLastName(String firstName, String lastName);
     Player saveAndFlush(Player player);
-
+    List<Player> findByFirstName(String firstName);
+    List<Player> findByLastName(String lastName);
 }

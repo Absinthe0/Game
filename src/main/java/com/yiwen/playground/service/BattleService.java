@@ -1,6 +1,5 @@
 package com.yiwen.playground.service;
 
-import com.yiwen.playground.model.CreateBattleMessage;
 import com.yiwen.playground.persistence.entity.Battle;
 
 

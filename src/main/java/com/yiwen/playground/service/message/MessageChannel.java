@@ -1,17 +1,19 @@
-package com.yiwen.playground.service;
+package com.yiwen.playground.service.message;
 
-import com.yiwen.playground.model.CreateBattleMessage;
-import com.yiwen.playground.model.JoinBattleMessage;
+import com.yiwen.playground.model.messages.CreateBattleMessage;
+import com.yiwen.playground.model.messages.JoinBattleMessage;
 import com.yiwen.playground.persistence.entity.Battle;
 import com.yiwen.playground.persistence.entity.BattleField;
 import com.yiwen.playground.persistence.entity.Player;
+import com.yiwen.playground.service.BattleFieldService;
+import com.yiwen.playground.service.BattleService;
+import com.yiwen.playground.service.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,8 +44,8 @@ public class MessageChannel {
                 .battleField(battleFiled)
                 .battleStatus("Created")
                 .players(players)
-                .startAt(Timestamp.valueOf(LocalDateTime.now()))
-                .endAt(Timestamp.valueOf(LocalDateTime.now().plusHours(1)))
+                .startAt(LocalDateTime.now())
+                .endAt(LocalDateTime.now().plusHours(1))
                 .build();
 
         battleService.saveOrUpdate(battle);
@@ -56,5 +58,6 @@ public class MessageChannel {
         Player player = playerService.findById(msg.getPlayerId());
 
         battle.getPlayers().add(player);
+        battleService.saveOrUpdate(battle);
     }
 }

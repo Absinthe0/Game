@@ -1,9 +1,9 @@
 package com.yiwen.playground.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yiwen.playground.model.BattleDTO;
-import com.yiwen.playground.model.CreateBattleMessage;
+import com.yiwen.playground.model.BattleFieldDTO;
+import com.yiwen.playground.model.messages.CreateBattleMessage;
+import com.yiwen.playground.model.messages.JoinBattleMessage;
 import com.yiwen.playground.model.PlayerDTO;
 import com.yiwen.playground.persistence.entity.Player;
 import com.yiwen.playground.service.PlayerService;
@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +37,7 @@ public class PlayersController {
     @GetMapping(value="")
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 400, message = "Invalid Player ID supplied", response = BattleDTO.class),
+                    @ApiResponse(code = 400, message = "Invalid Player ID supplied"),
                     @ApiResponse(code = 404, message = "Player not found"),
                     @ApiResponse(code = 500, message = "Server Error")
             })
@@ -45,18 +46,20 @@ public class PlayersController {
         List<Player> players;
         if (firstName != null && lastName != null) {
             players = playerService.findByName(firstName, lastName);
+        } else if (firstName != null && lastName == null) {
+            players = playerService.findByFirstName(firstName);
+        } else if (firstName == null && lastName != null) {
+            players = playerService.findByFirstName(lastName);
         } else {
             players = playerService.findAll();
         }
-        List<PlayerDTO> playerDTOs = new ArrayList<>();
-        players.forEach(x -> playerDTOs.add(modelMapper.map(x,PlayerDTO.class)));
-        return playerDTOs;
+        return modelMapper.map(players,new TypeToken<List<PlayerDTO>>(){}.getType());
     }
 
     @GetMapping(value = "/{id}")
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 400, message = "Invalid player ID supplied", response = BattleDTO.class),
+                    @ApiResponse(code = 400, message = "Invalid player ID supplied"),
                     @ApiResponse(code = 404, message = "Player not found"),
                     @ApiResponse(code = 500, message = "Server Error")
             })
@@ -77,5 +80,18 @@ public class PlayersController {
             @PathVariable("id") long id,
             @RequestBody CreateBattleMessage createBattleMessage) {
         this.template.send("topic1", createBattleMessage);
+    }
+
+    @PostMapping(value = "/{player_id}/joinBattle/{battle_id}")
+    public void joinBattle(
+            @PathVariable("player_id") long playerId,
+            @PathVariable("battle_id") long battleId) {
+        this.template.send(
+                "topic2",
+                JoinBattleMessage.builder()
+                        .battleId(battleId)
+                        .playerId(playerId)
+                        .build()
+        );
     }
 }

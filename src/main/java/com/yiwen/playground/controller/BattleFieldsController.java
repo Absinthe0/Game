@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import java.lang.reflect.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +28,11 @@ public class BattleFieldsController {
 
     @GetMapping(value="")
     public List<BattleFieldDTO> findAll(@RequestParam(required = false) String name) {
-        List<BattleField> battleFields;
-        if (name != null) {
-            battleFields = battleFieldService.findBattleFieldByName(name);
-        } else {
-            battleFields = battleFieldService.findAll();
-        }
-        List<BattleFieldDTO> battleFieldDTOs = new ArrayList<>();
-        battleFields.forEach(x -> battleFieldDTOs.add(modelMapper.map(x,BattleFieldDTO.class)));
-        return battleFieldDTOs;
+        List<BattleField> battleFields = name != null ?
+                battleFieldService.findBattleFieldByName(name) :
+                battleFieldService.findAll();
+
+        return modelMapper.map(battleFields,new TypeToken<List<BattleFieldDTO>>(){}.getType());
     }
 
     @GetMapping(value = "/{id}")
@@ -47,7 +46,6 @@ public class BattleFieldsController {
     {
         BattleField battleField = modelMapper.map(battleFieldDTO, BattleField.class);
         battleField = battleFieldService.saveOrUpdate(battleField);
-
         return modelMapper.map(battleField, BattleFieldDTO.class);
     }
 

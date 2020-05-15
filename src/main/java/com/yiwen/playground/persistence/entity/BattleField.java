@@ -1,7 +1,9 @@
 package com.yiwen.playground.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Builder
@@ -9,7 +11,7 @@ import java.util.Set;
 @Entity(name = "battle_field")
 @AllArgsConstructor
 @NoArgsConstructor
-public class BattleField {
+public class BattleField implements Serializable  {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -17,6 +19,7 @@ public class BattleField {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "battleField")
+    @OneToMany(mappedBy = "battleField", cascade= { CascadeType.ALL }, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Battle> battles;
 }

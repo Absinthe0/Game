@@ -1,6 +1,8 @@
 package com.yiwen.playground.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.yiwen.playground.persistence.entity.Battle;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -11,21 +13,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PlayerDTO implements Serializable {
 
-    @JsonProperty("playerId")
-    private String id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
-
-    @JsonFormat(shape = JsonFormat.Shape.ANY, pattern = "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
-    private LocalDateTime createdDate;
-    @JsonFormat(shape = JsonFormat.Shape.ANY, pattern = "yyyy-mm-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
-    private LocalDateTime modifiedDate;
-
-
-    @JsonIgnore
-    private List<BattleDTO> battles;
-
 }

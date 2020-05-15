@@ -31,5 +31,12 @@ public class PlayerServiceImpl implements PlayerService {
         return playerRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 
+    public List<Player> findByFirstName(String firstName) {
+        return playerRepository.findByFirstName(firstName);
+    }
+
+    public List<Player> findByLastName(String lastName) {
+        return playerRepository.findByLastName(lastName);
+    }
 
 }

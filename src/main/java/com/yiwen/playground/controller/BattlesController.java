@@ -1,17 +1,20 @@
 package com.yiwen.playground.controller;
 
 import com.yiwen.playground.model.BattleDTO;
+import com.yiwen.playground.model.BattleFieldDTO;
 import com.yiwen.playground.persistence.entity.Battle;
 import com.yiwen.playground.service.BattleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,7 +39,7 @@ public class BattlesController {
     @ResponseStatus(HttpStatus.OK)
     @ApiResponses(
             value = {
-                @ApiResponse(code = 400, message = "Invalid Battle ID supplied", response = BattleDTO.class),
+                @ApiResponse(code = 400, message = "Invalid Battle ID supplied"),
                 @ApiResponse(code = 404, message = "Battle not found"),
                 @ApiResponse(code = 500, message = "Server Error")
     })
@@ -54,10 +57,9 @@ public class BattlesController {
                     @ApiResponse(code = 500, message = "Server Error")
             }
     )
-    public List<BattleDTO> getBattles() {
-        List<BattleDTO> battleDTOS = new ArrayList<>();
-        battleService.findAll().forEach(x -> battleDTOS.add(modelMapper.map(x, BattleDTO.class)) );
-        return battleDTOS;
+    public List<Battle> getBattles() {
+       //return battleService.findAll();
+        return modelMapper.map(battleService.findAll(),new TypeToken<List<BattleDTO>>(){}.getType());
     }
 
     @RequestMapping(method = RequestMethod.POST)
